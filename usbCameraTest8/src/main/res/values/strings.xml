@@ -1,0 +1,64 @@
+<!--
+  ~  UVCCamera
+  ~  library and sample to access to UVC web camera on non-rooted Android device
+  ~
+  ~ Copyright (c) 2014-2017 saki t_saki@serenegiant.com
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  ~
+  ~  All files in the folder are under this Apache License, Version 2.0.
+  ~  Files in the libjpeg-turbo, libusb, libuvc, rapidjson folder
+  ~  may have a different license, see the respective files.
+  -->
+
+<resources>
+    <string name="app_name">usbCameraTest8</string>
+
+
+    <string-array name="array_fiber_type">
+        <item>SM</item>
+        <item>MM</item>
+        <item>MPO</item>
+    </string-array>
+
+    <string-array name="array_file_format">
+        <item>BMP</item>
+        <item>JPG</item>
+        <item>PNG</item>
+        <item>GIF</item>
+    </string-array>
+
+    <string-array name="array_analysis_report_format_standard">
+        <item>Standard</item>
+        <item>Extended</item>
+    </string-array>
+
+    <string-array name="array_analysis_report_format_simple">
+        <item>Simple</item>
+        <item>Detailed</item>
+    </string-array>
+
+    <string-array name="array_report_format">
+        <item>Text</item>
+        <item>Excel</item>
+    </string-array>
+
+    <string name="key_fiber_type" translatable="false">key_fiber_type</string>
+    <string name="key_image_file_format" translatable="false">key_image_file_format</string>
+    <string name="key_filename_prefix" translatable="false">key_filename_prefix</string>
+    <string name="key_sequential_number" translatable="false">key_sequential_number</string>
+    <string name="key_analysis_report_format_standard" translatable="false">key_analysis_report_format_standard</string>
+    <string name="key_analysis_report_format_simple" translatable="false">key_analysis_report_format_simple</string>
+    <string name="key_report_format" translatable="false">key_report_format</string>
+    <string name="key_file_path" translatable="false">key_file_path</string>
+</resources>
