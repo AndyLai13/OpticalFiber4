@@ -8,7 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.lightel.opticalfiber.UVCCameraActivity.ProbeType;
+import com.lightel.opticalfiber.ProbeManager.Probe;
 import com.serenegiant.usb.USBMonitor;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mBtnDI5000;
     Button mBtnSettings;
 
-    Probe DI1000;
-    Probe DI1000L;
-    Probe DI2000;
-    Probe DI3000;
-    Probe DI5000;
+    Probe DI1000 = ProbeManager.getInstance().DI1000;
+    Probe DI1000L =ProbeManager.getInstance().DI1000L;
+    Probe DI2000 =ProbeManager.getInstance().DI2000;
+    Probe DI3000 = ProbeManager.getInstance().DI3000;
+    Probe DI5000 = ProbeManager.getInstance().DI5000;
 
     public static final String PROBE_TYPE_UVC_CAMERA = "PROBE_TYPE_UVC_CAMERA";
 
@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mUSBMonitor = new USBMonitor(this, mOnDeviceConnectListener);
         mUSBMonitor.register();
 
-        initProbe();
         updateWifiProbeCapability();
         enableProbeButtons();
     }
@@ -63,28 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnDI3000.setOnClickListener(this);
         mBtnDI5000.setOnClickListener(this);
         mBtnSettings.setOnClickListener(this);
-    }
-
-    void initProbe() {
-        if (DI1000 == null) {
-            DI1000 = new Probe("DI1000", false);
-        }
-
-        if (DI1000L == null) {
-            DI1000L = new Probe("DI1000L", false);
-        }
-
-        if (DI2000 == null) {
-            DI2000 = new Probe("DI2000", false);
-        }
-
-        if (DI3000 == null) {
-            DI3000 = new Probe("DI3000", false);
-        }
-
-        if (DI5000 == null) {
-            DI5000 = new Probe("DI500", false);
-        }
     }
 
     void enableProbeButtons() {
@@ -114,15 +91,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.di1000:
                 intent = new Intent(this, UVCCameraActivity.class);
-                intent.putExtra(PROBE_TYPE_UVC_CAMERA, ProbeType.DI1000.ordinal());
+                intent.putExtra(PROBE_TYPE_UVC_CAMERA, DI1000.probeName);
                 break;
             case R.id.di1000l:
                 intent = new Intent(this, UVCCameraActivity.class);
-                intent.putExtra(PROBE_TYPE_UVC_CAMERA, ProbeType.DI1000L.ordinal());
+                intent.putExtra(PROBE_TYPE_UVC_CAMERA, DI1000L.probeName);
                 break;
             case R.id.di2000:
                 intent = new Intent(this, UVCCameraActivity.class);
-                intent.putExtra(PROBE_TYPE_UVC_CAMERA, ProbeType.DI2000.ordinal());
+                intent.putExtra(PROBE_TYPE_UVC_CAMERA, DI2000.probeName);
                 break;
             case R.id.di3000:
                 intent = new Intent(this, RTSPActivity.class);
@@ -148,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     void updateUSBProbeCapability(UsbDevice device, boolean enable) {
         runOnUiThread(() -> {
-            initProbe();
             String vid = Integer.toHexString(device.getVendorId()).toUpperCase();
             String pid = Integer.toHexString(device.getProductId()).toUpperCase();
             String probeId = vid + ":" + pid;
@@ -220,13 +196,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
-    private class Probe {
-        String probeName;
-        boolean enable;
-
-        Probe(String probeName, boolean enable) {
-            this.probeName = probeName;
-            this.enable = enable;
-        }
-    }
 }
