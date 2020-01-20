@@ -39,6 +39,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
+import android.widget.Toast;
 
 import com.serenegiant.encoder.MediaAudioEncoder;
 import com.serenegiant.encoder.MediaEncoder;
@@ -619,6 +620,8 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		public void handleUpdateMedia(final String path) {
 			if (DEBUG) Log.v(TAG_THREAD, "handleUpdateMedia:path=" + path);
 			final Activity parent = mWeakParent.get();
+			Toast.makeText(parent, "Capture image/video, path = " + path, Toast.LENGTH_SHORT).show();
+
 			final boolean released = (mHandler == null) || mHandler.mReleased;
 			if (parent != null && parent.getApplicationContext() != null) {
 				try {

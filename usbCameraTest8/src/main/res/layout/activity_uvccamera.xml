@@ -9,27 +9,31 @@
     tools:context=".UVCCameraActivity"
     tools:ignore="MergeRootFrame">
 
-    <com.serenegiant.widget.UVCCameraTextureView
-        android:id="@+id/camera_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"/>
-
-    <ImageView
-        android:id="@+id/frame_image"
+    <FrameLayout
+        android:id="@+id/frame_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/camera_view"
-        android:layout_alignLeft="@+id/camera_view"
-        android:layout_alignRight="@+id/camera_view"
-        android:layout_alignTop="@+id/camera_view"
-        android:src="@drawable/border"/>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/frame_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/border"
+            android:visibility="gone">
+        </ImageView>
+
+        <com.serenegiant.widget.UVCCameraTextureView
+            android:id="@+id/camera_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:layout_centerVertical="true"/>
+    </FrameLayout>
 
     <ToggleButton
         android:id="@+id/camera_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/camera_view"
+        android:layout_alignBottom="@id/frame_view"
         android:layout_alignParentEnd="true"
         android:text="ToggleButton"/>
 
@@ -47,7 +51,7 @@
         android:id="@+id/tools_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/camera_view"
+        android:layout_toEndOf="@id/frame_view"
         android:layout_alignParentTop="true"
         android:layout_margin="@dimen/vertical_margin2"
         android:orientation="vertical">
@@ -114,6 +118,32 @@
             android:layout_marginTop="@dimen/vertical_margin"
             android:textSize="40dp"
             android:text="Focus Bar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:textSize="40dp"
+            android:text="Capture type"/>
+
+        <RadioGroup
+            android:id="@+id/captureType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkedButton="@id/capture_image">
+            <RadioButton
+                android:id="@+id/capture_image"
+                android:text="Image"
+                android:textSize="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <RadioButton
+                android:id="@+id/capture_video"
+                android:text="Video"
+                android:textSize="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RadioGroup>
     </LinearLayout>
 
     <RelativeLayout

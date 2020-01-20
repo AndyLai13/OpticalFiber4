@@ -24,6 +24,7 @@
 package com.lightel.opticalfiber;
 
 import android.animation.Animator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
@@ -35,6 +36,8 @@ import android.view.Surface;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -108,13 +111,12 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
      * button for start/stop recording
      */
     private ImageButton mCaptureButton;
-
     private View mBrightnessButton, mContrastButton, mBtnSettings, mBtnSave;
-
-
     private View mResetButton;
     private View mToolsLayout, mValueLayout;
     private SeekBar mSettingSeekbar;
+    private RadioGroup mCaptureTypeRadioGroup;
+    private ImageView mFrameImage;
 
     String[] fiberType = {"SM", "MM", "MPO"};
 
@@ -135,6 +137,12 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
     Probe DI3000 = ProbeManager.getInstance().DI3000;
     Probe DI5000 = ProbeManager.getInstance().DI5000;
 
+    enum CaptureType {
+        Image,Video
+    }
+
+    CaptureType mCaptureType = CaptureType.Image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,6 +160,7 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
         mBtnSettings = findViewById(R.id.btnSettings);
 //        mBtnSave = findViewById(R.id.btnSaveImageAndReport);
 //        mSpinnerFiberType = findViewById(R.id.spinnerFiberType);
+        mCaptureTypeRadioGroup = findViewById(R.id.captureType);
 
         mCaptureButton.setOnClickListener(this);
         mBrightnessButton.setOnClickListener(this);
@@ -160,13 +169,26 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
         mBtnSettings.setOnClickListener(this);
 //        mBtnSave.setOnClickListener(this);
 
-
         mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
         ((UVCCameraTextureView) mUVCCameraView).setOnLongClickListener(mOnLongClickListener);
         mSettingSeekbar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
+        mCaptureTypeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int id) {
+                switch (id) {
+                    case R.id.capture_image:
+                        mCaptureType = CaptureType.Image;
+                        break;
+                    case R.id.capture_video:
+                        mCaptureType = CaptureType.Video;
+                        break;
+                }
+            }
+        });
+        mFrameImage = findViewById(R.id.frame_image);
+
 
         mUVCCameraView.setAspectRatio(PREVIEW_WIDTH / (float) PREVIEW_HEIGHT);
-
         mCaptureButton.setVisibility(View.INVISIBLE);
 //        mToolsLayout.setVisibility(View.INVISIBLE);
         mValueLayout.setVisibility(View.INVISIBLE);
@@ -176,6 +198,32 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
                 USE_SURFACE_ENCODER ? 0 : 1, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_MODE);
 
         setCurrentProbe();
+    }
+
+    void setCaptureStillImage() {
+        Log.d("Andy", "setCaptureStillImage");
+        mFrameImage.setVisibility(View.VISIBLE);
+        ((UVCCameraTextureView) mUVCCameraView).setVisibility(View.GONE);
+        mFrameImage.setImageBitmap(((UVCCameraTextureView) mUVCCameraView).getBitmap());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(UVCCameraActivity.this);
+        builder.setMessage("Save Image?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mFrameImage.setVisibility(View.GONE);
+                        ((UVCCameraTextureView) mUVCCameraView).setVisibility(View.VISIBLE);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create()
+                .show();
+
     }
 
     void setCurrentProbe() {
@@ -253,16 +301,10 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
     public void onClick(final View view) {
         switch (view.getId()) {
             case R.id.capture_button:
-                if (mCameraHandler.isOpened()) {
-                    if (checkPermissionWriteExternalStorage() && checkPermissionAudio()) {
-                        if (!mCameraHandler.isRecording()) {
-                            mCaptureButton.setColorFilter(0xffff0000);    // turn red
-                            mCameraHandler.startRecording();
-                        } else {
-                            mCaptureButton.setColorFilter(0);    // return to default color
-                            mCameraHandler.stopRecording();
-                        }
-                    }
+                if (mCaptureType == CaptureType.Image) {
+                    captureImage();
+                } else {
+                    captureVideo();
                 }
                 break;
             case R.id.btnBrightness:
@@ -278,6 +320,29 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
                 startActivity(new Intent(this, SettingsActivity.class));
                 break;
 //            case R.id.btnSavd
+        }
+    }
+
+    void captureImage() {
+        if (mCameraHandler.isOpened()) {
+            if (checkPermissionWriteExternalStorage()) {
+                mCameraHandler.captureStill();
+                setCaptureStillImage();
+            }
+        }
+    }
+
+    void captureVideo() {
+        if (mCameraHandler.isOpened()) {
+            if (checkPermissionWriteExternalStorage() && checkPermissionAudio()) {
+                if (!mCameraHandler.isRecording()) {
+                    mCaptureButton.setColorFilter(0xffff0000);    // turn red
+                    mCameraHandler.startRecording();
+                } else {
+                    mCaptureButton.setColorFilter(0);    // return to default color
+                    mCameraHandler.stopRecording();
+                }
+            }
         }
     }
 
@@ -304,15 +369,17 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
     private final View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(final View view) {
-            switch (view.getId()) {
-                case R.id.camera_view:
-                    if (mCameraHandler.isOpened()) {
-                        if (checkPermissionWriteExternalStorage()) {
-                            mCameraHandler.captureStill();
-                        }
-                        return true;
-                    }
-            }
+            Log.d("Andy", "onLongClick");
+//            switch (view.getId()) {
+//                case R.id.camera_view:
+//
+//                    if (mCameraHandler.isOpened()) {
+//                        if (checkPermissionWriteExternalStorage()) {
+//                            mCameraHandler.captureStill();
+//                        }
+//                        return true;
+//                    }
+//            }
             return false;
         }
     };
