@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/frame_view"
         android:layout_alignParentEnd="true"
-        android:text="ToggleButton"/>
+        android:text="off"/>
 
     <ImageButton
         android:id="@+id/capture_button"
@@ -69,10 +69,18 @@
 <!--            android:layout_height="wrap_content"/>-->
 
         <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/fontMiddle"
+            android:layout_marginTop="@dimen/vertical_margin"
+            android:text="back"/>
+
+        <Button
             android:id="@+id/btnBrightness"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="40dp"
+            android:textSize="@dimen/fontMiddle"
             android:layout_marginTop="@dimen/vertical_margin"
             android:text="brightness"/>
 
@@ -80,7 +88,7 @@
             android:id="@+id/btnContrast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="40dp"
+            android:textSize="@dimen/fontMiddle"
             android:layout_marginTop="@dimen/vertical_margin"
             android:text="contrast"/>
 
@@ -88,7 +96,7 @@
             android:id="@+id/btnSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="40dp"
+            android:textSize="@dimen/fontMiddle"
             android:layout_marginTop="@dimen/vertical_margin"
             android:text="settings"/>
 
@@ -109,41 +117,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:textSize="40dp"
+            android:textSize="@dimen/fontMiddle"
             android:text="Zone Rings" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:textSize="40dp"
+            android:textSize="@dimen/fontMiddle"
             android:text="Focus Bar" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:textSize="40dp"
-            android:text="Capture type"/>
+            android:visibility="gone"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textSize="16dp"
+                android:text="Capture type"/>
 
-        <RadioGroup
-            android:id="@+id/captureType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkedButton="@id/capture_image">
-            <RadioButton
-                android:id="@+id/capture_image"
-                android:text="Image"
-                android:textSize="40dp"
+            <RadioGroup
+                android:id="@+id/captureType"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <RadioButton
-                android:id="@+id/capture_video"
-                android:text="Video"
-                android:textSize="40dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </RadioGroup>
+                android:layout_height="wrap_content"
+                android:checkedButton="@id/capture_image">
+                <RadioButton
+                    android:id="@+id/capture_image"
+                    android:text="Image"
+                    android:textSize="@dimen/fontMiddle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <RadioButton
+                    android:id="@+id/capture_video"
+                    android:text="Video"
+                    android:textSize="@dimen/fontMiddle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </RadioGroup>
+        </LinearLayout>
+
     </LinearLayout>
 
     <RelativeLayout

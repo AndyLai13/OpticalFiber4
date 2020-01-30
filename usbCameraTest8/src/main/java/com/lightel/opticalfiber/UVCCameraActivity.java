@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -58,7 +59,7 @@ import static com.lightel.opticalfiber.SharedPreferenceHelper.PREF_KEY_CONTRAST;
 
 public final class UVCCameraActivity extends BaseActivity implements CameraDialog.CameraDialogParent,
         View.OnClickListener {
-    private static final boolean DEBUG = true;    // TODO set false on release
+    private static final boolean DEBUG = true;
     private static final String TAG = "MainActivity";
 
     /**
@@ -111,7 +112,7 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
      * button for start/stop recording
      */
     private ImageButton mCaptureButton;
-    private View mBrightnessButton, mContrastButton, mBtnSettings, mBtnSave;
+    private View mBtnBack, mBrightnessButton, mContrastButton, mBtnSettings, mBtnSave;
     private View mResetButton;
     private View mToolsLayout, mValueLayout;
     private SeekBar mSettingSeekbar;
@@ -150,6 +151,7 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
 
         mCameraButton = findViewById(R.id.camera_button);
         mCaptureButton = findViewById(R.id.capture_button);
+        mBtnBack = findViewById(R.id.btnBack);
         mBrightnessButton = findViewById(R.id.btnBrightness);
         mContrastButton = findViewById(R.id.btnContrast);
         mResetButton = findViewById(R.id.reset_button);
@@ -162,6 +164,12 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
 //        mSpinnerFiberType = findViewById(R.id.spinnerFiberType);
         mCaptureTypeRadioGroup = findViewById(R.id.captureType);
 
+        mBtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         mCaptureButton.setOnClickListener(this);
         mBrightnessButton.setOnClickListener(this);
         mContrastButton.setOnClickListener(this);
@@ -198,6 +206,30 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
                 USE_SURFACE_ENCODER ? 0 : 1, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_MODE);
 
         setCurrentProbe();
+        mValueLayout.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                Log.d("Andy", "keyEvent = " + keyEvent);
+
+                return false;
+            }
+        });
+
+
+        mCameraButton.performClick();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        Log.d("Andy", "keyCode = " + keyCode);
+        Log.d("Andy", "event = " + event);
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        Log.d("Andy", "event = " + event);
+        return super.dispatchKeyEvent(event);
     }
 
     void setCaptureStillImage() {
@@ -352,9 +384,12 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
         public void onCheckedChanged(final CompoundButton compoundButton, final boolean isChecked) {
             switch (compoundButton.getId()) {
                 case R.id.camera_button:
+                    compoundButton.setText(isChecked ? "On" :"Off");
+
                     if (isChecked && !mCameraHandler.isOpened()) {
                         CameraDialog.showDialog(UVCCameraActivity.this);
                     } else {
+
                         mCameraHandler.close();
                         setCameraButton(false);
                     }

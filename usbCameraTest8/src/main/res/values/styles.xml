@@ -33,6 +33,8 @@
 		<item name="android:windowFullscreen">true</item>
 		<item name="android:windowContentOverlay">@null</item>
 		<item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+		<item name="buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+		<item name="android:buttonStyleToggle">@style/Widget.AppCompat.Button.Colored</item>
 
 	</style>
 
