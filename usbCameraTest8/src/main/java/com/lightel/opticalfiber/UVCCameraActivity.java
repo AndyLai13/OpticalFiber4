@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -215,8 +216,12 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
             }
         });
 
-
-        mCameraButton.performClick();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                mCameraButton.performClick();
+            }
+        });
     }
 
     @Override
@@ -680,11 +685,13 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
                         mBrightness = seekBar.getProgress();
                         SharedPreferenceHelper.setData(UVCCameraActivity.this,
                                 mProbe.probeName, PREF_KEY_BRIGHTNESS, mBrightness);
+                        setValue(mSettingMode, seekBar.getProgress());
                         break;
                     case UVCCamera.PU_CONTRAST:
                         mContrast = seekBar.getProgress();
                         SharedPreferenceHelper.setData(UVCCameraActivity.this,
                                 mProbe.probeName, PREF_KEY_CONTRAST, mContrast);
+                        setValue(mSettingMode, seekBar.getProgress());
                         break;
                 }
             }    // if (active)
