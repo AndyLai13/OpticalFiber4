@@ -106,6 +106,12 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		return thread != null ? thread.getHeight() : 0;
 	}
 
+	public UVCCamera getUVCCamera() {
+		final CameraThread thread = mWeakThread.get();
+		return thread != null ? thread.getUVCCamera() : null;
+
+	}
+
 	public boolean isOpened() {
 		final CameraThread thread = mWeakThread.get();
 		return thread != null && thread.isCameraOpened();
@@ -401,6 +407,10 @@ abstract class AbstractUVCCameraHandler extends Handler {
 				}
 			}
 			return mHandler;
+		}
+
+		private UVCCamera getUVCCamera() {
+			return mUVCCamera;
 		}
 
 		public int getWidth() {

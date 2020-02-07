@@ -26,6 +26,7 @@ package com.lightel.opticalfiber;
 import android.animation.Animator;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
@@ -47,12 +48,16 @@ import android.widget.ToggleButton;
 import com.lightel.opticalfiber.ProbeManager.Probe;
 import com.serenegiant.common.BaseActivity;
 import com.serenegiant.usb.CameraDialog;
+import com.serenegiant.usb.IButtonCallback;
+import com.serenegiant.usb.IFrameCallback;
 import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.UVCCamera;
 import com.serenegiant.usbcameracommon.UVCCameraHandler;
 import com.serenegiant.utils.ViewAnimationHelper;
 import com.serenegiant.widget.CameraViewInterface;
 import com.serenegiant.widget.UVCCameraTextureView;
+
+import java.nio.ByteBuffer;
 
 import static com.lightel.opticalfiber.MainActivity.PROBE_TYPE_UVC_CAMERA;
 import static com.lightel.opticalfiber.SharedPreferenceHelper.PREF_KEY_BRIGHTNESS;
@@ -205,7 +210,6 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
         mUSBMonitor = new USBMonitor(this, mOnDeviceConnectListener);
         mCameraHandler = UVCCameraHandler.createHandler(this, mUVCCameraView,
                 USE_SURFACE_ENCODER ? 0 : 1, PREVIEW_WIDTH, PREVIEW_HEIGHT, PREVIEW_MODE);
-
         setCurrentProbe();
         mValueLayout.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -476,6 +480,34 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
             mCameraHandler.open(ctrlBlock);
             startPreview();
             updateItems();
+            mCameraHandler.getUVCCamera().setButtonCallback(new IButtonCallback() {
+                @Override
+                public void onButton(int button, int state) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("Andy", "button is clicked....");
+                        }
+                    });
+                }
+            });
+            mCameraHandler.getUVCCamera().setFrameCallback(new IFrameCallback() {
+                @Override
+                public void onFrame(ByteBuffer frame) {
+                    Log.d("Andy", "onFrame...");
+
+                    Bitmap bitmap = Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888);
+                    frame.clear();
+                    bitmap.copyPixelsFromBuffer(frame);
+
+                    mFrameImage.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mFrameImage.setImageBitmap(bitmap);
+                        }
+                    });
+                }
+            }, UVCCamera.PIXEL_FORMAT_NV21);
         }
 
         @Override
