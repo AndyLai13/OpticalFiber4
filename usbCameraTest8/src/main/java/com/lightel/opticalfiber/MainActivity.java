@@ -125,8 +125,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     void updateUSBProbeCapability(UsbDevice device, boolean enable) {
         runOnUiThread(() -> {
-            String vid = Integer.toHexString(device.getVendorId()).toUpperCase();
-            String pid = Integer.toHexString(device.getProductId()).toUpperCase();
+            String vid = normalize(device.getVendorId());
+            String pid = normalize(device.getProductId());
+
+
+
             String probeId = vid + ":" + pid;
             Log.d("Andy", "probeID = " + probeId + ", enable = " + enable);
             switch (probeId) {
@@ -135,12 +138,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case PROBE_ID1_3:
                     DI1000.enable = enable;
                     DI1000L.enable = enable;
+                    break;
                 case PROBE_ID2:
                     DI2000.enable = enable;
                     break;
             }
             enableProbeButtons();
         });
+    }
+
+    String normalize(int id) {
+        String strId = Integer.toHexString(id).toUpperCase();
+        StringBuilder s = new StringBuilder();
+        if (strId.length() <=4) {
+            int temp  = 4 - strId.length();
+            for (int i = 0; i< temp; i++) {
+                s.append("0");
+            }
+        }
+        s.append(strId);
+        return s.toString();
     }
 
     void updateWifiProbeCapability() {
