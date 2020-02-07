@@ -47,6 +47,7 @@ import com.serenegiant.encoder.MediaMuxerWrapper;
 import com.serenegiant.encoder.MediaSurfaceEncoder;
 import com.serenegiant.encoder.MediaVideoBufferEncoder;
 import com.serenegiant.encoder.MediaVideoEncoder;
+import com.serenegiant.usb.IButtonCallback;
 import com.serenegiant.usb.IFrameCallback;
 import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.UVCCamera;
@@ -64,6 +65,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+
+import static com.serenegiant.utils.UIThreadHelper.runOnUiThread;
 
 abstract class AbstractUVCCameraHandler extends Handler {
 	private static final boolean DEBUG = true;	// TODO set false on release
@@ -92,6 +95,9 @@ abstract class AbstractUVCCameraHandler extends Handler {
 	private final WeakReference<AbstractUVCCameraHandler.CameraThread> mWeakThread;
 	private volatile boolean mReleased;
 
+	private ByteBuffer mByteBuffer;
+	private Bitmap mFrozenImage;
+
 	protected AbstractUVCCameraHandler(final CameraThread thread) {
 		mWeakThread = new WeakReference<CameraThread>(thread);
 	}
@@ -106,10 +112,14 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		return thread != null ? thread.getHeight() : 0;
 	}
 
+	public Bitmap getFrozenImage() {
+		final CameraThread thread = mWeakThread.get();
+		return thread.getFrozenImage();
+	}
+
 	public UVCCamera getUVCCamera() {
 		final CameraThread thread = mWeakThread.get();
 		return thread != null ? thread.getUVCCamera() : null;
-
 	}
 
 	public boolean isOpened() {
@@ -363,6 +373,9 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		private MediaMuxerWrapper mMuxer;
 		private MediaVideoBufferEncoder mVideoEncoder;
 
+		private ByteBuffer mByteBuffer;
+		private Bitmap mFrozenImage	= Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888);
+
 		/**
 		 *
 		 * @param clazz Class extends AbstractUVCCameraHandler
@@ -409,8 +422,16 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			return mHandler;
 		}
 
+		private Bitmap getFrozenImage() {
+			synchronized (mSync) {
+				return mFrozenImage;
+			}
+		}
+
 		private UVCCamera getUVCCamera() {
-			return mUVCCamera;
+			synchronized (mSync) {
+				return mUVCCamera;
+			}
 		}
 
 		public int getWidth() {
@@ -448,13 +469,51 @@ abstract class AbstractUVCCameraHandler extends Handler {
 		}
 
 		public void handleOpen(final USBMonitor.UsbControlBlock ctrlBlock) {
-			if (DEBUG) Log.v(TAG_THREAD, "handleOpen:");
+			if (DEBUG) Log.v("Andy", "handleOpen:");
 			handleClose();
 			try {
 				final UVCCamera camera = new UVCCamera();
 				camera.open(ctrlBlock);
 				synchronized (mSync) {
+					if (DEBUG) Log.v("Andy", "mSync: mUVCCamera");
 					mUVCCamera = camera;
+//					mUVCCamera.setButtonCallback(new IButtonCallback() {
+//						@Override
+//						public void onButton(int button, int state) {
+//							runOnUiThread(new Runnable() {
+//								@Override
+//								public void run() {
+//									Log.d("Andy", "button is clicked....");
+//
+////									if (mByteBuffer != null) {
+////										Bitmap bitmap = Bitmap.createBitmap(1280, 960, Bitmap.Config.ARGB_8888);
+////										mByteBuffer.clear();
+////										mFrozenImage.copyPixelsFromBuffer(mByteBuffer);
+////										Log.d("Andy", "button is clicked then ....");
+////
+////									}
+////									handleCaptureStill("");
+//									if (mWeakParent.get() instanceof UVCCameraActivity)
+//
+//								}
+//							});
+//						}
+//					});
+//					mUVCCamera.setFrameCallback(new IFrameCallback() {
+//						@Override
+//						public void onFrame(ByteBuffer frame) {
+//							Log.d("Andy", "onFrame...");
+//							mByteBuffer = frame;
+//
+////							mFrameImage.post(new Runnable() {
+////								@Override
+////								public void run() {
+////									mFrameImage.setImageBitmap(bitmap);
+////								}
+////							});
+//						}
+//					}, UVCCamera.PIXEL_FORMAT_NV21);
+
 				}
 				callOnOpen();
 			} catch (final Exception e) {
@@ -529,6 +588,7 @@ abstract class AbstractUVCCameraHandler extends Handler {
 			mSoundPool.play(mSoundId, 0.2f, 0.2f, 0, 0, 1.0f);	// play shutter sound
 			try {
 				final Bitmap bitmap = mWeakCameraView.get().captureStillImage();
+				mFrozenImage = bitmap;
 				// get buffered output stream for saving a captured still image as a file on external storage.
 				// the file name is came from current time.
 				// You should use extension name as same as CompressFormat when calling Bitmap#compress.
