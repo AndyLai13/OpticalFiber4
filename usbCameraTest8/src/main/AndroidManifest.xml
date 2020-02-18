@@ -28,9 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UVCCameraActivity"></activity>
+        <activity android:name=".UVCCameraActivity" />
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".RTSPActivity"></activity>
+        <activity android:name=".RTSPActivity" />
     </application>
 
 </manifest>

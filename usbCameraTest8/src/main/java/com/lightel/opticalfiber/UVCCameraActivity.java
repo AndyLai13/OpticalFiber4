@@ -25,6 +25,7 @@ package com.lightel.opticalfiber;
 
 import android.animation.Animator;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
@@ -33,11 +34,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -47,12 +49,15 @@ import com.lightel.opticalfiber.ProbeManager.Probe;
 import com.serenegiant.common.BaseActivity;
 import com.serenegiant.usb.CameraDialog;
 import com.serenegiant.usb.IButtonCallback;
+import com.serenegiant.usb.IFrameCallback;
 import com.serenegiant.usb.USBMonitor;
 import com.serenegiant.usb.UVCCamera;
 import com.serenegiant.usbcameracommon.UVCCameraHandler;
 import com.serenegiant.utils.ViewAnimationHelper;
 import com.serenegiant.widget.CameraViewInterface;
 import com.serenegiant.widget.UVCCameraTextureView;
+
+import java.nio.ByteBuffer;
 
 import static com.lightel.opticalfiber.MainActivity.PROBE_TYPE_UVC_CAMERA;
 import static com.lightel.opticalfiber.SharedPreferenceHelper.PREF_KEY_BRIGHTNESS;
@@ -114,11 +119,15 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
      */
     private ImageButton mCaptureButton;
     private View mBtnBack, mBrightnessButton, mContrastButton, mBtnSettings, mBtnSave, mBackVideoStream;
-    private View mResetButton;
+    private View mResetButton, mFrameButtons;
     private View mToolsLayout, mValueLayout;
     private SeekBar mSettingSeekbar;
     private RadioGroup mCaptureTypeRadioGroup;
-    private ImageView mFrameImage;
+    private ZoomImageView2 mFrameImage;
+
+    private Button mBtnZoomIn, mBtnSlide;
+
+    ByteBuffer tempFrameByteBuffer;
 
     String[] fiberType = {"SM", "MM", "MPO"};
 
@@ -140,8 +149,15 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
     Probe DI5000 = ProbeManager.getInstance().DI5000;
 
     enum CaptureType {
-        Image,Video
+        Image, Video
     }
+
+    enum ButtonState {
+        Freeze,
+        VideoStream
+    }
+
+    ButtonState buttonState = ButtonState.VideoStream;
 
     CaptureType mCaptureType = CaptureType.Image;
 
@@ -165,6 +181,11 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
 //        mSpinnerFiberType = findViewById(R.id.spinnerFiberType);
         mCaptureTypeRadioGroup = findViewById(R.id.captureType);
         mBackVideoStream = findViewById(R.id.btn_back_video_stream);
+        mFrameButtons = findViewById(R.id.frame_tool);
+        mBtnZoomIn = findViewById(R.id.zoom_in);
+        mBtnSlide = findViewById(R.id.slide);
+        mBtnSlide.setOnClickListener(this);
+        mBtnZoomIn.setOnClickListener(this);
         mBackVideoStream.setOnClickListener(this);
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,7 +201,7 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
 //        mBtnSave.setOnClickListener(this);
 
         mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
-        ((UVCCameraTextureView) mUVCCameraView).setOnLongClickListener(mOnLongClickListener);
+//        ((UVCCameraTextureView) mUVCCameraView).setOnLongClickListener(mOnLongClickListener);
         mSettingSeekbar.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
         mCaptureTypeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -228,45 +249,32 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
 
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        Log.d("Andy", "keyCode = " + keyCode);
-        Log.d("Andy", "event = " + event);
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        Log.d("Andy", "event = " + event);
-        return super.dispatchKeyEvent(event);
-    }
-
     void setCaptureStillImage() {
         Log.d("Andy", "setCaptureStillImage");
-        mBackVideoStream.setVisibility(View.VISIBLE);
+        mFrameButtons.setVisibility(View.VISIBLE);
+        mToolsLayout.setVisibility(View.GONE);
+
         mFrameImage.setVisibility(View.VISIBLE);
         ((UVCCameraTextureView) mUVCCameraView).setVisibility(View.GONE);
-        mFrameImage.setImageBitmap(((UVCCameraTextureView) mUVCCameraView).getBitmap());
 
-//        AlertDialog.Builder builder = new AlertDialog.Builder(UVCCameraActivity.this);
-//        builder.setMessage("Save Image?")
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        mFrameImage.setVisibility(View.GONE);
-//                        ((UVCCameraTextureView) mUVCCameraView).setVisibility(View.VISIBLE);
-//                    }
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                    }
-//                })
-//                .create()
-//                .show();
-
+        if (tempFrameByteBuffer != null) {
+            Bitmap bitmap = Bitmap.createBitmap(1280, 960, Bitmap.Config.RGB_565);
+            tempFrameByteBuffer.clear();
+            bitmap.copyPixelsFromBuffer(tempFrameByteBuffer);
+            mFrameImage.setImageBitmap(bitmap);
+//            mFrameImage.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View view, MotionEvent motionEvent) {
+//                    Log.d("Andy", "event.getPointerCount() = " + motionEvent.getPointerCount());
+//                    Log.d("Andy", "event " + motionEvent);
+//                    return true;
+//                }
+//            });
+//            mFrameBitmap = bitmap;
+//            startActivity(new Intent(UVCCameraActivity.this, FrameActivity.class));
+        }
     }
+    public static Bitmap mFrameBitmap;
 
     void setCurrentProbe() {
         if (getIntent() != null) {
@@ -301,23 +309,41 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (DEBUG) Log.v(TAG, "onStart:");
+    protected void onResume() {
+        super.onResume();
         mUSBMonitor.register();
         if (mUVCCameraView != null)
             mUVCCameraView.onResume();
     }
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        if (DEBUG) Log.v(TAG, "onStart:");
+//        mUSBMonitor.register();
+//        if (mUVCCameraView != null)
+//            mUVCCameraView.onResume();
+//    }
+
 
     @Override
-    protected void onStop() {
-        if (DEBUG) Log.v(TAG, "onStop:");
+    protected void onPause() {
+        super.onPause();
         mCameraHandler.close();
         if (mUVCCameraView != null)
             mUVCCameraView.onPause();
         setCameraButton(false);
-        super.onStop();
     }
+
+//    @Override
+//    protected void onStop() {
+//        if (DEBUG) Log.v(TAG, "onStop:");
+//        mCameraHandler.close();
+//        if (mUVCCameraView != null)
+//            mUVCCameraView.onPause();
+//        setCameraButton(false);
+//        super.onStop();
+//    }
 
     @Override
     public void onDestroy() {
@@ -363,12 +389,35 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
                 break;
 //            case R.id.btnSavd
             case R.id.btn_back_video_stream:
-                mBackVideoStream.setVisibility(View.GONE);
-                mFrameImage.setVisibility(View.GONE);
-                ((UVCCameraTextureView) mUVCCameraView).setVisibility(View.VISIBLE);
+                backVideoStream();
+                break;
+            case R.id.zoom_in:
+//                mFrameImage.zoomIn(10);
+                break;
+//                Rect originRect = new Rect();
+//                mFrameImage.getGlobalVisibleRect(originRect);
+//                int centerX = (originRect.right - originRect.left) / 2;
+//                int centerY = (originRect.bottom - originRect.top) / 2;
+//
+//                Rect tmp = new Rect(centerX - 50, centerY - 50, centerX +50, centerY + 50);
+//
+//                mFrameImage.setClipBounds(tmp);
+//                break;
+            case R.id.slide:
+//                mFrameImage.slide(10);
                 break;
         }
     }
+
+    void backVideoStream() {
+
+        mFrameButtons.setVisibility(View.GONE);
+        mToolsLayout.setVisibility(View.VISIBLE);
+
+        mFrameImage.setVisibility(View.GONE);
+        ((UVCCameraTextureView) mUVCCameraView).setVisibility(View.VISIBLE);
+    }
+
 
     void captureImage() {
         if (mCameraHandler.isOpened()) {
@@ -399,7 +448,7 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
         public void onCheckedChanged(final CompoundButton compoundButton, final boolean isChecked) {
             switch (compoundButton.getId()) {
                 case R.id.camera_button:
-                    compoundButton.setText(isChecked ? "On" :"Off");
+                    compoundButton.setText(isChecked ? "On" : "Off");
 
                     if (isChecked && !mCameraHandler.isOpened()) {
                         CameraDialog.showDialog(UVCCameraActivity.this);
@@ -413,26 +462,26 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
         }
     };
 
-    /**
-     * capture still image when you long click on preview image(not on buttons)
-     */
-    private final View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
-        @Override
-        public boolean onLongClick(final View view) {
-            Log.d("Andy", "onLongClick");
-//            switch (view.getId()) {
-//                case R.id.camera_view:
-//
-//                    if (mCameraHandler.isOpened()) {
-//                        if (checkPermissionWriteExternalStorage()) {
-//                            mCameraHandler.captureStill();
-//                        }
-//                        return true;
-//                    }
-//            }
-            return false;
-        }
-    };
+//    /**
+//     * capture still image when you long click on preview image(not on buttons)
+//     */
+//    private final View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
+//        @Override
+//        public boolean onLongClick(final View view) {
+//            Log.d("Andy", "onLongClick");
+////            switch (view.getId()) {
+////                case R.id.camera_view:
+////
+////                    if (mCameraHandler.isOpened()) {
+////                        if (checkPermissionWriteExternalStorage()) {
+////                            mCameraHandler.captureStill();
+////                        }
+////                        return true;
+////                    }
+////            }
+//            return false;
+//        }
+//    };
 
     private void setCameraButton(final boolean isOn) {
         runOnUiThread(new Runnable() {
@@ -500,7 +549,13 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
                                         Log.d("Andy", "button is clicked....state = action down");
                                     } else {
                                         Log.d("Andy", "button is clicked....state = action up");
-                                        captureImage();
+                                        if (buttonState == ButtonState.Freeze) {
+                                            buttonState = ButtonState.VideoStream;
+                                            backVideoStream();
+                                        } else {
+                                            buttonState = ButtonState.Freeze;
+                                            captureImage();
+                                        }
                                     }
                                 }
                             });
@@ -508,40 +563,31 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
                     });
                 }
             }, 1000);
-//            new Handler().postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCameraHandler.getUVCCamera().setFrameCallback(new IFrameCallback() {
+                        @Override
+                        public void onFrame(ByteBuffer frame) {
+//                            Log.d("Andy", "onFrame...");
+                            tempFrameByteBuffer = frame;
+                        }
+                    }, UVCCamera.PIXEL_FORMAT_RGB565);
 //                    mCameraHandler.getUVCCamera().setFrameCallback(new IFrameCallback() {
 //                        @Override
 //                        public void onFrame(ByteBuffer frame) {
 //                            Log.d("Andy", "frame = " + frame);
-//                            Bitmap bitmap = Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888);
+//                            Bitmap bitmap = Bitmap.createBitmap(PREVIEW_WIDTH, PREVIEW_HEIGHT, Bitmap.Config.ARGB_8888);
+//
 //                            frame.clear();
 //                            bitmap.copyPixelsFromBuffer(frame);
 //                            Log.d("Andy", "bitmap = " + bitmap);
 //
 //                        }
 //                    }, UVCCamera.PIXEL_FORMAT_NV21);
-//                }
-//            }, 1000);
-//            });
-//            mCameraHandler.getUVCCamera().setFrameCallback(new IFrameCallback() {
-//                @Override
-//                public void onFrame(ByteBuffer frame) {
-//                    Log.d("Andy", "onFrame...");
-//
-//                    Bitmap bitmap = Bitmap.createBitmap(640, 480, Bitmap.Config.ARGB_8888);
-//                    frame.clear();
-//                    bitmap.copyPixelsFromBuffer(frame);
-//
-//                    mFrameImage.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            mFrameImage.setImageBitmap(bitmap);
-//                        }
-//                    });
-//                }
-//            }, UVCCamera.PIXEL_FORMAT_NV21);
+                }
+            }, 1000);
+
         }
 
         @Override

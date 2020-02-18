@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,167 +9,210 @@
     tools:context=".UVCCameraActivity"
     tools:ignore="MergeRootFrame">
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/frame_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/frame_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/border"
-            android:visibility="gone">
-        </ImageView>
+        android:layout_width="960px"
+        android:layout_height="720px"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:foregroundGravity="left">
 
         <com.serenegiant.widget.UVCCameraTextureView
             android:id="@+id/camera_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:visibility="visible"
-            android:layout_centerVertical="true"/>
-    </FrameLayout>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/btn_back_video_stream"
+        <com.lightel.opticalfiber.ZoomImageView2
+            android:id="@+id/frame_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/frame_tool"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:visibility="gone"
-        android:text="Back to video stream"
-        android:layout_alignEnd="@id/frame_view"/>
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
+
+        <Button
+            android:id="@+id/btn_back_video_stream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/vertical_margin"
+            android:text="Back to\n video stream" />
+
+        <Button
+            android:id="@+id/zoom_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="zoom in"/>
+
+        <Button
+            android:id="@+id/zoom_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="zoom out"/>
+
+        <Button
+            android:id="@+id/slide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="slide"/>
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/imageViewFrozenImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ToggleButton
         android:id="@+id/camera_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/frame_view"
         android:layout_alignParentEnd="true"
-        android:text="off"/>
+        android:layout_alignParentBottom="true"
+        android:text="off" />
 
     <ImageButton
         android:id="@+id/capture_button"
         android:layout_width="@dimen/button_size"
         android:layout_height="@dimen/button_size"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:background="@null"
         android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_camera"/>
+        android:src="@android:drawable/ic_menu_camera" />
 
     <LinearLayout
         android:id="@+id/tools_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/frame_view"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/vertical_margin2"
         android:orientation="vertical">
 
-<!--        <TextView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:textSize="20dp"-->
-<!--            android:text="Fiber Type"/>-->
+        <!--        <TextView-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:textSize="20dp"-->
+        <!--            android:text="Fiber Type"/>-->
 
-<!--        <Spinner-->
-<!--            android:id="@+id/spinnerFiberType"-->
-<!--            android:layout_marginTop="@dimen/vertical_margin"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"/>-->
+        <!--        <Spinner-->
+        <!--            android:id="@+id/spinnerFiberType"-->
+        <!--            android:layout_marginTop="@dimen/vertical_margin"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"/>-->
 
         <Button
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/fontMiddle"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:text="back"/>
+            android:text="back"
+            android:textSize="@dimen/fontMiddle" />
 
         <Button
             android:id="@+id/btnBrightness"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/fontMiddle"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:text="brightness"/>
+            android:text="brightness"
+            android:textSize="@dimen/fontMiddle" />
 
         <Button
             android:id="@+id/btnContrast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/fontMiddle"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:text="contrast"/>
+            android:text="contrast"
+            android:textSize="@dimen/fontMiddle" />
 
         <Button
             android:id="@+id/btnSettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/fontMiddle"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:text="settings"/>
+            android:text="settings"
+            android:textSize="@dimen/fontMiddle" />
 
-<!--        <Button-->
-<!--            android:id="@+id/btnSaveImageAndReport"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/vertical_margin"-->
-<!--            android:text="Save Image and Report"/>-->
+        <!--        <Button-->
+        <!--            android:id="@+id/btnSaveImageAndReport"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="@dimen/vertical_margin"-->
+        <!--            android:text="Save Image and Report"/>-->
 
-<!--        <CheckBox-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/vertical_margin"-->
-<!--            android:text="Wide View Scope" />-->
+        <!--        <CheckBox-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="@dimen/vertical_margin"-->
+        <!--            android:text="Wide View Scope" />-->
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:textSize="@dimen/fontMiddle"
-            android:text="Zone Rings" />
+            android:text="Zone Rings"
+            android:textSize="@dimen/fontMiddle" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:textSize="@dimen/fontMiddle"
-            android:text="Focus Bar" />
+            android:text="Focus Bar"
+            android:textSize="@dimen/fontMiddle" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:textSize="16dp"
-                android:text="Capture type"/>
+                android:text="Capture type"
+                android:textSize="16dp" />
 
             <RadioGroup
                 android:id="@+id/captureType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkedButton="@id/capture_image">
+
                 <RadioButton
                     android:id="@+id/capture_image"
-                    android:text="Image"
-                    android:textSize="@dimen/fontMiddle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="Image"
+                    android:textSize="@dimen/fontMiddle" />
+
                 <RadioButton
                     android:id="@+id/capture_video"
-                    android:text="Video"
-                    android:textSize="@dimen/fontMiddle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="Video"
+                    android:textSize="@dimen/fontMiddle" />
             </RadioGroup>
         </LinearLayout>
 
@@ -179,9 +222,9 @@
         android:id="@+id/value_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
         android:background="#22ffffff"
         android:visibility="invisible">
 
@@ -191,7 +234,7 @@
             android:layout_height="@dimen/sz_icon_camera_ctrl"
             android:background="@null"
             android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher"/>
+            android:src="@mipmap/ic_launcher" />
 
         <SeekBar
             android:id="@+id/setting_seekbar"
@@ -200,6 +243,6 @@
             android:layout_centerInParent="true"
             android:layout_toRightOf="@+id/reset_button"
             android:max="100"
-            android:progress="50"/>
+            android:progress="50" />
     </RelativeLayout>
 </RelativeLayout>

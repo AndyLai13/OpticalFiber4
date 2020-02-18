@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FrameActivity">
+
+    <com.lightel.opticalfiber.ZoomImageView2
+        android:id="@+id/frame_image"
+        android:layout_width="960px"
+        android:layout_height="720px"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/frame_tool"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btn_back_video_stream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/vertical_margin"
+            android:text="Back to\n video stream" />
+
+        <Button
+            android:id="@+id/zoom_in"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="zoom in"/>
+
+        <Button
+            android:id="@+id/zoom_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="zoom out"/>
+
+        <Button
+            android:id="@+id/slide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="slide"/>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
