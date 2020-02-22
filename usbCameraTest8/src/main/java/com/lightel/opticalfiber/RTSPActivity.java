@@ -36,6 +36,14 @@ public class RTSPActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton snapButton;
     String rtspUrl = "rtsp://wowzaec2demo.streamlock.net/vod/mp4:BigBuckBunny_115k.mov";
 
+    String rtspUrl0 = "rtsp://192.168.1.1/";
+
+//    String rtspUrl1 = "rtsp://192.168.1.1/MJPG?W=1280&H=960";
+    String rtspUrl1 = "rtsp://192.168.1.1/MJPG";
+    String rtspUrl2 = "rtsp://192.168.1.1/MJPG?W=640&H=480";
+    String rtspUrl3 = "rtsp://192.168.1.1/H264?W=1280&H=960";
+    String rtspUrl4 = "rtsp://192.168.1.1/H264?W=640&H=480";
+
     private MediaPlayer mediaPlayer;
     private TextureView textureView;
     public static String TAG = "Andy";
@@ -130,7 +138,7 @@ public class RTSPActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setDataSource(rtspUrl);
+            mediaPlayer.setDataSource(rtspUrl0);
             mediaPlayer.setSurface(s);
             mediaPlayer.prepare();
 
