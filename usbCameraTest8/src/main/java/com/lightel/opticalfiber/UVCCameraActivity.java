@@ -30,11 +30,10 @@ import android.graphics.SurfaceTexture;
 import android.hardware.usb.UsbDevice;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
@@ -197,7 +196,7 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
         mBrightnessButton.setOnClickListener(this);
         mContrastButton.setOnClickListener(this);
         mResetButton.setOnClickListener(this);
-        mBtnSettings.setOnClickListener(this);
+//        mBtnSettings.setOnClickListener(this);
 //        mBtnSave.setOnClickListener(this);
 
         mCameraButton.setOnCheckedChangeListener(mOnCheckedChangeListener);
@@ -308,42 +307,42 @@ public final class UVCCameraActivity extends BaseActivity implements CameraDialo
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mUSBMonitor.register();
-        if (mUVCCameraView != null)
-            mUVCCameraView.onResume();
-    }
-//
 //    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        if (DEBUG) Log.v(TAG, "onStart:");
+//    protected void onResume() {
+//        super.onResume();
 //        mUSBMonitor.register();
 //        if (mUVCCameraView != null)
 //            mUVCCameraView.onResume();
 //    }
 
-
     @Override
-    protected void onPause() {
-        super.onPause();
-        mCameraHandler.close();
+    protected void onStart() {
+        super.onStart();
+        if (DEBUG) Log.v(TAG, "onStart:");
+        mUSBMonitor.register();
         if (mUVCCameraView != null)
-            mUVCCameraView.onPause();
-        setCameraButton(false);
+            mUVCCameraView.onResume();
     }
 
+//
 //    @Override
-//    protected void onStop() {
-//        if (DEBUG) Log.v(TAG, "onStop:");
+//    protected void onPause() {
+//        super.onPause();
 //        mCameraHandler.close();
 //        if (mUVCCameraView != null)
 //            mUVCCameraView.onPause();
 //        setCameraButton(false);
-//        super.onStop();
 //    }
+
+    @Override
+    protected void onStop() {
+        if (DEBUG) Log.v(TAG, "onStop:");
+        mCameraHandler.close();
+        if (mUVCCameraView != null)
+            mUVCCameraView.onPause();
+        setCameraButton(false);
+        super.onStop();
+    }
 
     @Override
     public void onDestroy() {

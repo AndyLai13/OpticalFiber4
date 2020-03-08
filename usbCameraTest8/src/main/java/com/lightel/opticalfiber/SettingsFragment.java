@@ -2,10 +2,10 @@ package com.lightel.opticalfiber;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.preference.DropDownPreference;
-import android.support.v7.preference.EditTextPreference;
-import android.support.v7.preference.PreferenceFragmentCompat;
+import androidx.annotation.Nullable;
+import androidx.preference.DropDownPreference;
+import androidx.preference.EditTextPreference;
+import androidx.preference.PreferenceFragmentCompat;
 import android.util.Log;
 
 
@@ -35,6 +35,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Andy", "onCreate SettingsFragment");
         mKeyFiberType = getString(R.string.key_fiber_type);
         mKeyImageFileFormat = getString(R.string.key_image_file_format);
         mKeyFilenamePrefix = getString(R.string.key_filename_prefix);
@@ -54,43 +55,43 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onResume() {
         super.onResume();
         getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
-        mPrefFiberType = (DropDownPreference) findPreference(mKeyFiberType);
-        mPrefImageFileFormat = (DropDownPreference) findPreference(mKeyImageFileFormat);
-        mPrefFilenamePrefix = (EditTextPreference) findPreference(mKeyFilenamePrefix);
-        mPrefSequentialNumber = (EditTextPreference) findPreference(mKeySequentialNumber);
-        mPrefAnalysisReportFormatStandard = (DropDownPreference) findPreference(mKeyAnalysisReportFormatStandard);
-        mPrefAnalysisReportFormatSimple = (DropDownPreference) findPreference(mKeyAnalysisReportFormatSimple);
-        mPrefReportFormat = (DropDownPreference) findPreference(mKeyReportFormat);
-        mPrefFilePath = (EditTextPreference) findPreference(mKeyFilePath);
-
-        SharedPreferences spf = getPreferenceScreen().getSharedPreferences();
-        String defaultValue;
-
-        defaultValue = getResources().getStringArray(R.array.array_fiber_type)[0];
-        mPrefFiberType.setSummary(spf.getString(mKeyFiberType, defaultValue));
-
-        defaultValue = getResources().getStringArray(R.array.array_file_format)[0];
-        mPrefImageFileFormat.setSummary(spf.getString(mKeyImageFileFormat, defaultValue));
-
-        defaultValue = "con";
-        mPrefFilenamePrefix.setSummary(spf.getString(mKeyFilenamePrefix, defaultValue));
-
-        defaultValue = "0002";
-        mPrefSequentialNumber.setSummary(spf.getString(mKeySequentialNumber, defaultValue));
-
-        defaultValue = getResources().getStringArray(R.array.array_analysis_report_format_standard)[0];
-        ;
-        mPrefAnalysisReportFormatStandard.setSummary(spf.getString(mKeyAnalysisReportFormatStandard, defaultValue));
-
-        defaultValue = getResources().getStringArray(R.array.array_analysis_report_format_simple)[0];
-        mPrefAnalysisReportFormatSimple.setSummary(spf.getString(mKeyAnalysisReportFormatSimple, defaultValue));
-
-        defaultValue = getResources().getStringArray(R.array.array_file_format)[0];
-        mPrefReportFormat.setSummary(spf.getString(mKeyReportFormat, defaultValue));
-
-        defaultValue = "/sdcard/0/";
-        mPrefFilePath.setSummary(spf.getString(mKeyFilePath, defaultValue));
+//
+//        mPrefFiberType = (DropDownPreference) findPreference(mKeyFiberType);
+//        mPrefImageFileFormat = (DropDownPreference) findPreference(mKeyImageFileFormat);
+//        mPrefFilenamePrefix = (EditTextPreference) findPreference(mKeyFilenamePrefix);
+//        mPrefSequentialNumber = (EditTextPreference) findPreference(mKeySequentialNumber);
+//        mPrefAnalysisReportFormatStandard = (DropDownPreference) findPreference(mKeyAnalysisReportFormatStandard);
+//        mPrefAnalysisReportFormatSimple = (DropDownPreference) findPreference(mKeyAnalysisReportFormatSimple);
+//        mPrefReportFormat = (DropDownPreference) findPreference(mKeyReportFormat);
+//        mPrefFilePath = (EditTextPreference) findPreference(mKeyFilePath);
+//
+//        SharedPreferences spf = getPreferenceScreen().getSharedPreferences();
+//        String defaultValue;
+//
+//        defaultValue = getResources().getStringArray(R.array.array_fiber_type)[0];
+//        mPrefFiberType.setSummary(spf.getString(mKeyFiberType, defaultValue));
+//
+//        defaultValue = getResources().getStringArray(R.array.array_file_format)[0];
+//        mPrefImageFileFormat.setSummary(spf.getString(mKeyImageFileFormat, defaultValue));
+//
+//        defaultValue = "con";
+//        mPrefFilenamePrefix.setSummary(spf.getString(mKeyFilenamePrefix, defaultValue));
+//
+//        defaultValue = "0002";
+//        mPrefSequentialNumber.setSummary(spf.getString(mKeySequentialNumber, defaultValue));
+//
+//        defaultValue = getResources().getStringArray(R.array.array_analysis_report_format_standard)[0];
+//        ;
+//        mPrefAnalysisReportFormatStandard.setSummary(spf.getString(mKeyAnalysisReportFormatStandard, defaultValue));
+//
+//        defaultValue = getResources().getStringArray(R.array.array_analysis_report_format_simple)[0];
+//        mPrefAnalysisReportFormatSimple.setSummary(spf.getString(mKeyAnalysisReportFormatSimple, defaultValue));
+//
+//        defaultValue = getResources().getStringArray(R.array.array_file_format)[0];
+//        mPrefReportFormat.setSummary(spf.getString(mKeyReportFormat, defaultValue));
+//
+//        defaultValue = "/sdcard/0/";
+//        mPrefFilePath.setSummary(spf.getString(mKeyFilePath, defaultValue));
     }
 
     @Override
@@ -102,22 +103,22 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d("Andy", "key = " + key + ", value = " + sharedPreferences.getString(key, "NA"));
-        if (key.equals(mKeyFiberType)) {
-            mPrefFiberType.setSummary(sharedPreferences.getString(key, "NA"));
-        } else if (key.equals(mKeyImageFileFormat)) {
-            mPrefImageFileFormat.setSummary(sharedPreferences.getString(key, "NA"));
-        } else if (key.equals(mKeyFilenamePrefix)) {
-            mPrefFilenamePrefix.setSummary(sharedPreferences.getString(key, "NA"));
-        } else if (key.equals(mKeySequentialNumber)) {
-            mPrefSequentialNumber.setSummary(sharedPreferences.getString(key, "NA"));
-        } else if (key.equals(mKeyAnalysisReportFormatStandard)) {
-            mPrefAnalysisReportFormatStandard.setSummary(sharedPreferences.getString(key, "NA"));
-        } else if (key.equals(mKeyAnalysisReportFormatSimple)) {
-            mPrefAnalysisReportFormatSimple.setSummary(sharedPreferences.getString(key, "NA"));
-        } else if (key.equals(mKeyReportFormat)) {
-            mPrefReportFormat.setSummary(sharedPreferences.getString(key, "NA"));
-        } else if (key.equals(mKeyFilePath)) {
-            mPrefFilePath.setSummary(sharedPreferences.getString(key, "NA"));
-        }
+//        if (key.equals(mKeyFiberType)) {
+//            mPrefFiberType.setSummary(sharedPreferences.getString(key, "NA"));
+//        } else if (key.equals(mKeyImageFileFormat)) {
+//            mPrefImageFileFormat.setSummary(sharedPreferences.getString(key, "NA"));
+//        } else if (key.equals(mKeyFilenamePrefix)) {
+//            mPrefFilenamePrefix.setSummary(sharedPreferences.getString(key, "NA"));
+//        } else if (key.equals(mKeySequentialNumber)) {
+//            mPrefSequentialNumber.setSummary(sharedPreferences.getString(key, "NA"));
+//        } else if (key.equals(mKeyAnalysisReportFormatStandard)) {
+//            mPrefAnalysisReportFormatStandard.setSummary(sharedPreferences.getString(key, "NA"));
+//        } else if (key.equals(mKeyAnalysisReportFormatSimple)) {
+//            mPrefAnalysisReportFormatSimple.setSummary(sharedPreferences.getString(key, "NA"));
+//        } else if (key.equals(mKeyReportFormat)) {
+//            mPrefReportFormat.setSummary(sharedPreferences.getString(key, "NA"));
+//        } else if (key.equals(mKeyFilePath)) {
+//            mPrefFilePath.setSummary(sharedPreferences.getString(key, "NA"));
+//        }
     }
 }

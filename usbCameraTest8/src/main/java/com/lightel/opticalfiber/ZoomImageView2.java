@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -14,9 +13,10 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 
-public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
+import androidx.viewpager.widget.ViewPager;
+
+public class ZoomImageView2 extends androidx.appcompat.widget.AppCompatImageView
         implements ScaleGestureDetector.OnScaleGestureListener,
         View.OnTouchListener, ViewTreeObserver.OnGlobalLayoutListener {
     /**

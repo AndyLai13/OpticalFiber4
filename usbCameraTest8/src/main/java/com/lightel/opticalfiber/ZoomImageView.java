@@ -2,15 +2,14 @@ package com.lightel.opticalfiber;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class ZoomImageView extends android.support.v7.widget.AppCompatImageView implements View.OnTouchListener {
+public class ZoomImageView extends androidx.appcompat.widget.AppCompatImageView implements View.OnTouchListener {
 
     private Drawable image;
     private int zoomController = 0;

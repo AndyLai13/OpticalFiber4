@@ -9,7 +9,7 @@
     tools:context=".UVCCameraActivity"
     tools:ignore="MergeRootFrame">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/frame_view"
         android:layout_width="960px"
         android:layout_height="720px"
@@ -38,7 +38,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/frame_tool"
@@ -152,6 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/vertical_margin"
             android:text="settings"
+            android:visibility="gone"
             android:textSize="@dimen/fontMiddle" />
 
         <!--        <Button-->

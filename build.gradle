@@ -17,7 +17,8 @@ allprojects {
 		maven { url 'https://maven.google.com' }
 		jcenter()
 		maven { url 'http://raw.github.com/saki4510t/libcommon/master/repository/' }
-    }
+		google()
+	}
 }
 
 task clean(type: Delete) {
@@ -28,7 +29,7 @@ ext {
 	supportLibVersion = '27.1.1'  // variable that can be referenced to keep support libs consistent
 	commonLibVersion= '2.12.4'
 	versionBuildTool = '27.0.3'
-	versionCompiler = 27
+	versionCompiler = 28
 	versionTarget = 27
 	versionNameString = '1.0.0'
 	javaSourceCompatibility = JavaVersion.VERSION_1_8

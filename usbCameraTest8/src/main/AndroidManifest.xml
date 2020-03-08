@@ -30,7 +30,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".UVCCameraActivity" />
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".SettingsActivity">
+        </activity>
         <activity android:name=".RTSPActivity" >
 
         </activity>

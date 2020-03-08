@@ -2,11 +2,12 @@ package com.lightel.opticalfiber;
 
 import android.content.Intent;
 import android.hardware.usb.UsbDevice;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.lightel.opticalfiber.ProbeManager.Probe;
 import com.serenegiant.usb.USBMonitor;
@@ -23,11 +24,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button mBtnDI2000;
     Button mBtnDI3000;
     Button mBtnDI5000;
+    Button mBtnOptions;
     Button mBtnSettings;
 
+
     Probe DI1000 = ProbeManager.getInstance().DI1000;
-    Probe DI1000L =ProbeManager.getInstance().DI1000L;
-    Probe DI2000 =ProbeManager.getInstance().DI2000;
+    Probe DI1000L = ProbeManager.getInstance().DI1000L;
+    Probe DI2000 = ProbeManager.getInstance().DI2000;
     Probe DI3000 = ProbeManager.getInstance().DI3000;
     Probe DI5000 = ProbeManager.getInstance().DI5000;
 
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnDI2000 = findViewById(R.id.di2000);
         mBtnDI3000 = findViewById(R.id.di3000);
         mBtnDI5000 = findViewById(R.id.di5000);
+        mBtnOptions = findViewById(R.id.options);
         mBtnSettings = findViewById(R.id.settings);
 
         mBtnDI1000.setOnClickListener(this);
@@ -61,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnDI2000.setOnClickListener(this);
         mBtnDI3000.setOnClickListener(this);
         mBtnDI5000.setOnClickListener(this);
+        mBtnDI5000.setOnClickListener(this);
+        mBtnOptions.setOnClickListener(this);
         mBtnSettings.setOnClickListener(this);
     }
 
@@ -107,6 +113,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.settings:
                 intent = getPackageManager().getLaunchIntentForPackage("com.droidlogic.tv.settings");
                 break;
+            case R.id.options:
+                intent = new Intent(this, SettingsActivity.class);
+                break;
             case R.id.di5000:
             default:
                 intent = null;
@@ -129,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String pid = normalize(device.getProductId());
 
 
-
             String probeId = vid + ":" + pid;
             Log.d("Andy", "probeID = " + probeId + ", enable = " + enable);
             switch (probeId) {
@@ -150,9 +158,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String normalize(int id) {
         String strId = Integer.toHexString(id).toUpperCase();
         StringBuilder s = new StringBuilder();
-        if (strId.length() <=4) {
-            int temp  = 4 - strId.length();
-            for (int i = 0; i< temp; i++) {
+        if (strId.length() <= 4) {
+            int temp = 4 - strId.length();
+            for (int i = 0; i < temp; i++) {
                 s.append("0");
             }
         }
