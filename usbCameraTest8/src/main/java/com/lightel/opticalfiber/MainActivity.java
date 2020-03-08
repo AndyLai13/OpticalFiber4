@@ -51,9 +51,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mUSBMonitor = new USBMonitor(this, mOnDeviceConnectListener);
         mUSBMonitor.register();
+    }
 
-        updateWifiProbeCapability();
+    @Override
+    protected void onResume() {
+        super.onResume();
         enableUsbProbeButtons();
+        updateWifiProbeCapability();
     }
 
     void initViews() {
