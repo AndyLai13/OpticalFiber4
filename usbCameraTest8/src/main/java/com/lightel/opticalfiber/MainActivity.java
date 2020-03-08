@@ -167,8 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     boolean isDI3000Available() {
-//        return isNetworkConnected() && isDI3000RTSPUrlAvailable();
-        return true;
+        return isNetworkConnected() && isDI3000RTSPUrlAvailable();
     }
 
     boolean isDI5000Available() {

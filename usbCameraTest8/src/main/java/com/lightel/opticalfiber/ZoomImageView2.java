@@ -115,10 +115,10 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
                 if (getScale() < mMidScale) {
                     //進行自動放大
                     post(new AutoScaleRunnable(mMidScale, x, y));
-                    Log.i("ttt", "根據圖片的縮放值小於指定的雙擊縮放值------FD");
+                    Log.i("Andy", "根據圖片的縮放值小於指定的雙擊縮放值------FD");
                 } else {
                     //當前圖片的縮放值大於初試縮放值，則自動縮小
-                    Log.i("ttt", "根據圖片的縮放值小於指定的雙擊縮放值------zdsx");
+                    Log.i("Andy", "根據圖片的縮放值小於指定的雙擊縮放值------zdsx");
                     post(new AutoScaleRunnable(mInitScale, x, y));
                 }
                 return true;
@@ -151,15 +151,14 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
      */
     @Override
     public void onGlobalLayout() {
-        Log.d("Andy", "onGlobalLayout");
+        Log.d("Andy", "onGlobalLayout mFirst = " + mFirst);
         //只有當第一次載入圖片的時候才會進行初始化，用一個變數mFirst控制
-//        if (!mFirst) {
-//            mFirst = true;
+        if (!mFirst) {
             //得到控制元件的寬和高
             int width = getWidth();
             int height = getHeight();
-
-            Log.i("ttt", "得倒控制元件的寬高" + "" + width + "" + height);
+            if (width == 0 || height == 0) return;
+            Log.i("Andy", "得倒控制元件的寬高" + "" + width + "" + height);
             //得到當前ImageView中載入的圖片
             Drawable d = getDrawable();
             if (d == null) {//如果沒有圖片，則直接返回
@@ -170,13 +169,14 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
             //將圖片完整的顯示在螢幕中
             int dw = d.getIntrinsicWidth();
             int dh = d.getIntrinsicHeight();
-            Log.i("ttt", "得倒圖片的寬高" + "" + dw + "" + dh);
+            Log.i("Andy", "得倒圖片的寬高" + "" + dw + "" + dh);
+            if (dw == 0 || dh == 0) return;
 
             //我們定義一個臨時變數，根據圖片與控制元件的寬高比例，來確定這個最終縮放值
             float scale = 1.0f;
             //如果圖片寬度大於控制元件寬度，圖片高度小於控制元件高度
             if (dw > width && dh < height) {
-                Log.i("ttt", "圖片寬度大於控制元件寬度，圖片高度小於控制元件高度");
+                Log.i("Andy", "圖片寬度大於控制元件寬度，圖片高度小於控制元件高度");
                 //我們需要將圖片寬度縮小，縮小至控制元件的寬度
                 //至於為什麼要這樣計算，我們可以這樣想
                 //我們呼叫matrix.postScale（scale,scale）時，寬和高都要乘以scale的
@@ -187,7 +187,7 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
             }
             //如果圖片的寬度小於控制元件寬度，圖片高度大於控制元件高度
             if (dw < width && dh > height) {
-                Log.i("ttt", "圖片的寬度小於控制元件寬度，圖片高度大於控制元件高度");
+                Log.i("Andy", "圖片的寬度小於控制元件寬度，圖片高度大於控制元件高度");
                 //我們就應該將圖片的高度縮小，縮小至控制元件的高度，計算方法同上
                 scale = height * 1.0f / dh;
             }
@@ -199,7 +199,7 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
             //縮小的倍數也應該為那個最小值
             if ((dw < width && dh < height) || (dw > width && dh > height)) {
                 scale = Math.min(width * 1.0f / dw, height * 1.0f / dh);
-                Log.i("ttt", "圖片的寬度小於控制元件寬度，高度小於控制元件高度時");
+                Log.i("Andy", "圖片的寬度小於控制元件寬度，高度小於控制元件高度時");
             }
 
             //我們還應該對圖片進行平移操作，將圖片移動到螢幕的居中位置
@@ -220,7 +220,10 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
             mMaxScale = mInitScale * 4;
             //雙擊放大比例為初始化比例的2倍
             mMidScale = mInitScale * 2;
-//        }
+
+            mFirst = true;
+
+        }
     }
 
     /**
@@ -234,7 +237,7 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
         //拿到Matrix中的MSCALE_X的值，這個值為圖片寬度的縮放比例，因為圖片高度
         //的縮放比例和寬度的縮放比例一致，我們取一個就可以了
         //我們還可以 return values[Matrix.MSCALE_Y];
-        Log.i("ttt", "圖片的縮放值------" + values[Matrix.MSCALE_X]);
+        Log.i("Andy", "圖片的縮放值------" + values[Matrix.MSCALE_X]);
         return values[Matrix.MSCALE_X];
 
 
@@ -303,13 +306,13 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
         }
         //如果圖片的寬度小於控制元件的寬度，我們要對圖片做一個水平的居中
         if (rectF.width() < width) {
-            Log.i("ttt", "圖片的寬度小於控制元件的寬度，我們要對圖片做一個水平的居中");
+            Log.i("Andy", "圖片的寬度小於控制元件的寬度，我們要對圖片做一個水平的居中");
             deltaX = width / 2f - rectF.right + rectF.width() / 2f;
         }
 
         //如果圖片的高度小於控制元件的高度，我們要對圖片做一個豎直方向的居中
         if (rectF.height() < height) {
-            Log.i("ttt", "圖片的高度小於控制元件的高度，我們要對圖片做一個豎直方向的居中");
+            Log.i("Andy", "圖片的高度小於控制元件的高度，我們要對圖片做一個豎直方向的居中");
             deltaY = height / 2f - rectF.bottom + rectF.height() / 2f;
         }
         //將平移的偏移量作用到矩陣上
@@ -382,16 +385,16 @@ public class ZoomImageView2 extends android.support.v7.widget.AppCompatImageView
             this.mTargetScale = targetScale;
             this.x = x;
             this.y = y;
-            Log.i("ttt", "-----" + mTargetScale);
+            Log.i("Andy", "-----" + mTargetScale);
             //如果當前縮放比例小於目標比例，說明要自動放大
             if (getScale() < mTargetScale) {
-                Log.i("ttt", "如果當前縮放比例小於目標比例，說明要自動放大");
+                Log.i("Andy", "如果當前縮放比例小於目標比例，說明要自動放大");
                 //設定為Bigger
                 tempScale = BIGGER;
             }
             //如果當前縮放比例大於目標比例，說明要自動縮小
             if (getScale() > mTargetScale) {
-                Log.i("ttt", "當前縮放比例大於目標比例，說明要自動縮小");
+                Log.i("Andy", "當前縮放比例大於目標比例，說明要自動縮小");
                 //設定為Smaller
                 tempScale = SMALLER;
             }
