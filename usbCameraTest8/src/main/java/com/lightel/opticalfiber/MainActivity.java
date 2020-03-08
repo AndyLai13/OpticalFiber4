@@ -9,8 +9,13 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.JsonObject;
 import com.lightel.opticalfiber.ProbeManager.Probe;
 import com.serenegiant.usb.USBMonitor;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
@@ -48,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mUSBMonitor.register();
 
         updateWifiProbeCapability();
-        enableProbeButtons();
+        enableUsbProbeButtons();
     }
 
     void initViews() {
@@ -70,11 +75,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBtnSettings.setOnClickListener(this);
     }
 
-    void enableProbeButtons() {
+    void enableUsbProbeButtons() {
         Log.d("Andy", "enableProbeButtons");
         mBtnDI1000.setEnabled(DI1000.enable);
         mBtnDI1000L.setEnabled(DI1000L.enable);
         mBtnDI2000.setEnabled(DI2000.enable);
+    }
+
+    void enableRTSPProbeButtons() {
+        Log.d("Andy", "enableProbeButtons");
         mBtnDI3000.setEnabled(DI3000.enable);
         mBtnDI5000.setEnabled(DI5000.enable);
     }
@@ -151,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     DI2000.enable = enable;
                     break;
             }
-            enableProbeButtons();
+            enableUsbProbeButtons();
         });
     }
 
@@ -169,9 +178,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     void updateWifiProbeCapability() {
-        DI3000.enable = isDI3000Available();
         DI5000.enable = isDI5000Available();
-        enableProbeButtons();
+
+        RestApiManager.getInstance().getDefault(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    DI3000.enable = true;
+                } else {
+                    DI3000.enable = false;
+                }
+                enableRTSPProbeButtons();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.d("Andy", "Throwable = " + t);
+                DI3000.enable = false;
+                enableRTSPProbeButtons();
+
+            }
+        });
     }
 
     boolean isDI3000Available() {

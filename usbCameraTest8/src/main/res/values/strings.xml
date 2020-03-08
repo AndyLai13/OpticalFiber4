@@ -61,4 +61,7 @@
     <string name="key_analysis_report_format_simple" translatable="false">key_analysis_report_format_simple</string>
     <string name="key_report_format" translatable="false">key_report_format</string>
     <string name="key_file_path" translatable="false">key_file_path</string>
+
+    <string name="state_real_time_stream" translatable="false">State: Real Time Stream</string>
+    <string name="state_frozen_image" translatable="false">State: Frozen Image</string>
 </resources>

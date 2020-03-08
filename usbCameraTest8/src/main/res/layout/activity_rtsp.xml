@@ -1,146 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    tools:context=".UVCCameraActivity"
-    tools:ignore="MergeRootFrame">
+    android:id="@+id/drawer_layout">
 
-    <TextureView
-        android:id="@+id/camera_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerVertical="true"/>
+        android:background="#273469"
+        tools:context=".Main2Activity">
 
-    <ImageView
-        android:id="@+id/frame_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/camera_view"
-        android:layout_alignLeft="@+id/camera_view"
-        android:layout_alignRight="@+id/camera_view"
-        android:layout_alignTop="@+id/camera_view"
-        android:src="@drawable/border"/>
+        <TextureView
+            android:id="@+id/texture_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <ToggleButton
-        android:id="@+id/camera_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/camera_view"
-        android:layout_alignParentEnd="true"
-        android:text="ToggleButton"/>
+        <LinearLayout
+            android:id="@+id/lost_connection_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-    <ImageButton
-        android:id="@+id/capture_button"
-        android:layout_width="@dimen/button_size"
-        android:layout_height="@dimen/button_size"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:background="@null"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_camera"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/lost_connection"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cannot connect to DI-3000. Please check your Wi-Fi connection after airplane mode opened."
+                android:visibility="visible"
+                android:layout_margin="20dp"
+                android:textColor="@android:color/white"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <Button
+                android:id="@+id/retry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Retry"
+                android:textAllCaps="false"
+                style="@android:style/Widget.Holo.Button"/>
+
+        </LinearLayout>
+
+        <com.lightel.opticalfiber.ZoomImageView2
+            android:id="@+id/freeze"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/state"
+            android:text="@string/state_real_time_stream"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <LinearLayout
+            android:id="@+id/buttonArea"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/texture_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="20dp"
+
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:textAllCaps="false"
+                style="@android:style/Widget.Holo.Button"
+                android:layout_margin="5dp"/>
+
+            <Button
+                android:id="@+id/option"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option"
+                android:textAllCaps="false"
+                android:layout_margin="5dp"
+                style="@android:style/Widget.Holo.Button" />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/text_battery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Battery :"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:layout_margin="20dp"
+            app:layout_constraintStart_toEndOf="@id/texture_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonArea"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/tools_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/camera_view"
-        android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/vertical_margin2"
-        android:orientation="vertical">
+        android:layout_width="320dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:orientation="vertical"
+        android:background="#C6C5B9"
+        android:padding="10dp">
 
-        <!--        <TextView-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:textSize="20dp"-->
-        <!--            android:text="Fiber Type"/>-->
-
-        <!--        <Spinner-->
-        <!--            android:id="@+id/spinnerFiberType"-->
-        <!--            android:layout_marginTop="@dimen/vertical_margin"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"/>-->
-
-        <Button
-            android:id="@+id/btnBrightness"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="40dp"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:text="brightness"/>
-
-        <Button
-            android:id="@+id/btnContrast"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="40dp"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:text="contrast"/>
-
-        <Button
-            android:id="@+id/btnSettings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="40dp"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:text="settings"/>
-
-        <!--        <Button-->
-        <!--            android:id="@+id/btnSaveImageAndReport"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="@dimen/vertical_margin"-->
-        <!--            android:text="Save Image and Report"/>-->
-
-        <!--        <CheckBox-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginTop="@dimen/vertical_margin"-->
-        <!--            android:text="Wide View Scope" />-->
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:textSize="40dp"
-            android:text="Zone Rings" />
-
-        <CheckBox
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:textSize="40dp"
-            android:text="Focus Bar" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/value_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentStart="true"
-        android:background="#22ffffff"
-        android:visibility="invisible">
-
-        <ImageButton
-            android:id="@+id/reset_button"
-            android:layout_width="@dimen/sz_icon_camera_ctrl"
-            android:layout_height="@dimen/sz_icon_camera_ctrl"
-            android:background="@null"
-            android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher"/>
-
-        <SeekBar
-            android:id="@+id/setting_seekbar"
+        <LinearLayout
+            android:id="@+id/layout_contrast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@+id/reset_button"
-            android:max="100"
-            android:progress="50"/>
-    </RelativeLayout>
-</RelativeLayout>
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Contrast"
+                android:textColor="@android:color/white" />
+
+            <SeekBar
+                android:id="@+id/seekbar_contrast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_brightness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Brightness"
+                android:textColor="@android:color/white" />
+
+            <SeekBar
+                android:id="@+id/seekbar_brightness"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
