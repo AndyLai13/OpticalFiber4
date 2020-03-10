@@ -11,8 +11,8 @@
         android:id="@+id/di1000"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:text="DI1000"
-        android:textSize="25dp"
+        android:text="DI-1000"
+        android:textSize="@dimen/main_page_option_font"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/di3000"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,8 +22,8 @@
         android:id="@+id/di3000"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:text="DI3000"
-        android:textSize="25dp"
+        android:text="DI-3000"
+        android:textSize="@dimen/main_page_option_font"
         app:layout_constraintTop_toBottomOf="@id/di1000"
         app:layout_constraintBottom_toBottomOf="@id/settings"
         app:layout_constraintStart_toStartOf="@id/di1000"/>
@@ -33,7 +33,7 @@
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:text="Settings"
-        android:textSize="25dp"
+        android:textSize="@dimen/main_page_option_font"
         app:layout_constraintTop_toBottomOf="@id/di3000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/di1000"/>
@@ -42,8 +42,8 @@
         android:id="@+id/di1000l"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:text="DI1000L"
-        android:textSize="25dp"
+        android:text="DI-1000L"
+        android:textSize="@dimen/main_page_option_font"
         app:layout_constraintTop_toTopOf="@id/di1000"
         app:layout_constraintStart_toEndOf="@id/di1000"
         app:layout_constraintEnd_toStartOf="@id/di2000"
@@ -53,8 +53,8 @@
         android:id="@+id/di2000"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:text="DI2000"
-        android:textSize="25dp"
+        android:text="DI-2000"
+        android:textSize="@dimen/main_page_option_font"
         app:layout_constraintTop_toTopOf="@id/di1000"
         app:layout_constraintStart_toEndOf="@id/di1000l"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -63,8 +63,8 @@
         android:id="@+id/di5000"
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
-        android:text="DI5000"
-        android:textSize="25dp"
+        android:text="DI-5000"
+        android:textSize="@dimen/main_page_option_font"
         app:layout_constraintTop_toTopOf="@id/di3000"
         app:layout_constraintStart_toEndOf="@id/di3000"
         app:layout_constraintEnd_toStartOf="@id/options"/>
@@ -74,10 +74,19 @@
         android:layout_width="@dimen/button_width"
         android:layout_height="@dimen/button_height"
         android:text="Options"
-        android:textSize="25dp"
+        android:textSize="@dimen/main_page_option_font"
         app:layout_constraintStart_toEndOf="@id/di5000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/di5000"/>
+
+    <ImageView
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:src="@drawable/lightel"
+        app:layout_constraintStart_toStartOf="@id/options"
+        app:layout_constraintBottom_toBottomOf="@id/settings">
+
+    </ImageView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
